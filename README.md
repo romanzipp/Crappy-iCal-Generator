@@ -2,7 +2,7 @@
 
 ### Supported calendars:
 
-- MotoGP 2020
+- [MotoGP 2020](https://www.motogp.com/en/calendar)
 
 ## Usage
 
