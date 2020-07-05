@@ -1,21 +1,23 @@
 <?php
 
-namespace romanzipp\MotoGP\Generator;
+namespace romanzipp\CalendarGenerator\Generator\MotoGP;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Dom\HtmlNode;
 use PHPHtmlParser\Exceptions\EmptyCollectionException;
-use romanzipp\MotoGP\Objects\Event;
+use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
 
 class Generator implements GeneratorInterface
 {
-    /** @var \romanzipp\MotoGP\Objects\Event[] */
+    /**
+     * @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
+     */
     private array $events;
 
     /**
-     * @return \romanzipp\MotoGP\Objects\Event[]
+     * @return \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
      */
     public function generateEvents(): array
     {

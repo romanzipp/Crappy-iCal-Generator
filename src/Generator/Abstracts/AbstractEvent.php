@@ -1,10 +1,11 @@
 <?php
 
-namespace romanzipp\MotoGP\Objects;
+namespace romanzipp\CalendarGenerator\Generator\Abstracts;
 
 use Carbon\Carbon;
+use romanzipp\CalendarGenerator\Generator\Interfaces\EventInterface;
 
-class Event
+abstract class AbstractEvent implements EventInterface
 {
     public ?Carbon $start = null;
     public ?Carbon $end = null;

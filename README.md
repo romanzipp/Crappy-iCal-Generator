@@ -1,9 +1,23 @@
-# super crappy motogp iCal generator
+# Crappy iCal Generator
 
-sorry
+### Supported calendars:
 
-## usage
+- MotoGP 2020
+
+## Usage
+
+### Show available calendars
 
 ```
-php calendar generate
+php calendar list
+```
+
+### Generate calendar
+
+```
+php calendar generate <calendar>
+```
+
+```
+php calendar generate motogp-2020
 ```

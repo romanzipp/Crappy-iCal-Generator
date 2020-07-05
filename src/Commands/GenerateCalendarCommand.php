@@ -1,10 +1,12 @@
 <?php
 
-namespace romanzipp\MotoGP\Commands;
+namespace romanzipp\CalendarGenerator\Commands;
 
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event as iCalEvent;
-use romanzipp\MotoGP\Generator;
+use InvalidArgumentException;
+use romanzipp\CalendarGenerator\Generator\Calendars;
+use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,13 +19,28 @@ class GenerateCalendarCommand extends Command
     protected function configure()
     {
         $this
+            ->setHelp(
+                sprintf('Available calendars: %s', implode(', ', Calendars::getKeys()))
+            )
             ->setDescription('Generates a MotoGP ICS file')
+            ->addArgument('calendar', InputArgument::REQUIRED, 'The calendar to generator')
             ->addArgument('output', InputArgument::OPTIONAL, 'The output ics file', 'motogp.ics');
+    }
+
+    private function spawnGenerator(InputInterface $input): GeneratorInterface
+    {
+        $calendar = $input->getArgument('calendar');
+
+        if ( ! array_key_exists($calendar, Calendars::$generators)) {
+            throw new InvalidArgumentException('Cant find calendar');
+        }
+
+        return new Calendars::$generators[$calendar];
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $generator = new Generator\Generator();
+        $generator = $this->spawnGenerator($input);
 
         $events = $generator->generateEvents();
 
@@ -65,7 +82,7 @@ class GenerateCalendarCommand extends Command
     }
 
     /**
-     * @param \romanzipp\MotoGP\Objects\Event[] $events
+     * @param \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[] $events
      * @return \Eluceo\iCal\Component\Calendar
      */
     private function generateCalendar(array $events): iCalCalendar
@@ -77,6 +94,8 @@ class GenerateCalendarCommand extends Command
         $iCalCalendar->setCalId('motogp-2020');
 
         foreach ($events as $event) {
+
+            /** @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent $event */
 
             $iCalEvent = new iCalEvent();
 

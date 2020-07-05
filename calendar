@@ -3,10 +3,14 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$application = new \Symfony\Component\Console\Application();
+$application = new \Symfony\Component\Console\Application;
 
 $application->add(
-    new \romanzipp\MotoGP\Commands\GenerateCalendarCommand()
+    new \romanzipp\CalendarGenerator\Commands\GenerateCalendarCommand
+);
+
+$application->add(
+    new \romanzipp\CalendarGenerator\Commands\ListCalendarsCommand
 );
 
 $application->run();

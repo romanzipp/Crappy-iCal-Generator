@@ -11,7 +11,7 @@
     },
     "autoload": {
         "psr-4": {
-            "romanzipp\\MotoGP\\": "src"
+            "romanzipp\\CalendarGenerator\\": "src"
         },
         "files": [
             "src/helpers.php"
