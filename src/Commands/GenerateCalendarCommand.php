@@ -5,7 +5,7 @@ namespace romanzipp\CalendarGenerator\Commands;
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event as iCalEvent;
 use InvalidArgumentException;
-use romanzipp\CalendarGenerator\Generator\Calendars;
+use romanzipp\CalendarGenerator\Generator\Calendar;
 use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +20,7 @@ class GenerateCalendarCommand extends Command
     {
         $this
             ->setHelp(
-                sprintf('Available calendars: %s', implode(', ', Calendars::getKeys()))
+                sprintf('Available calendars: %s', implode(', ', Calendar::getKeys()))
             )
             ->setDescription('Generates a MotoGP ICS file')
             ->addArgument('calendar', InputArgument::REQUIRED, 'The calendar to generator')
@@ -29,13 +29,15 @@ class GenerateCalendarCommand extends Command
 
     private function spawnGenerator(InputInterface $input): GeneratorInterface
     {
-        $calendar = $input->getArgument('calendar');
+        $calendar = Calendar::getCalendar(
+            $input->getArgument('calendar')
+        );
 
-        if ( ! array_key_exists($calendar, Calendars::$generators)) {
+        if ($calendar === null) {
             throw new InvalidArgumentException('Cant find calendar');
         }
 
-        return new Calendars::$generators[$calendar];
+        return new $calendar->generator;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,13 +48,7 @@ class GenerateCalendarCommand extends Command
 
         foreach ($events as $event) {
             $output->writeln(
-                vsprintf('%s [%s]  %s  %s  "%s"', [
-                    $event->start->format('Y-m-d'),
-                    spaces($event->league, 8),
-                    spaces($event->shortType, 3, STR_PAD_RIGHT),
-                    spaces($event->location, 14, STR_PAD_RIGHT),
-                    $event->title,
-                ])
+                $event->getLogLine()
             );
         }
 

@@ -2,7 +2,7 @@
 
 namespace romanzipp\CalendarGenerator\Commands;
 
-use romanzipp\CalendarGenerator\Generator\Calendars;
+use romanzipp\CalendarGenerator\Generator\Calendar;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +15,7 @@ class ListCalendarsCommand extends Command
     {
         $output->writeln('Available calendars:');
 
-        foreach (Calendars::getKeys() as $calendarKey) {
+        foreach (Calendar::getKeys() as $calendarKey) {
             $output->writeln('  - ' . $calendarKey);
         }
 

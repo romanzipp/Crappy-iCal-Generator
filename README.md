@@ -21,3 +21,10 @@ php calendar generate <calendar>
 ```
 php calendar generate motogp-2020
 ```
+
+## Development
+
+### Register new calendar
+
+- Create new `Generator` and `Event` classes.
+- Register the calendar in `romanzipp\CalendarGenerator\Generator\Calendar::getCalendars`.
