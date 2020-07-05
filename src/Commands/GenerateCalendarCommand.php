@@ -4,9 +4,7 @@ namespace romanzipp\CalendarGenerator\Commands;
 
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event as iCalEvent;
-use InvalidArgumentException;
 use romanzipp\CalendarGenerator\Generator\Calendar;
-use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,22 +25,18 @@ class GenerateCalendarCommand extends Command
             ->addArgument('output', InputArgument::OPTIONAL, 'The output ics file', 'motogp.ics');
     }
 
-    private function spawnGenerator(InputInterface $input): GeneratorInterface
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $calendar = Calendar::getCalendar(
             $input->getArgument('calendar')
         );
 
         if ($calendar === null) {
-            throw new InvalidArgumentException('Cant find calendar');
+            return Command::FAILURE;
         }
 
-        return new $calendar->generator;
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $generator = $this->spawnGenerator($input);
+        /** @var \romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface $generator */
+        $generator = new $calendar->generator;
 
         $events = $generator->generateEvents();
 
@@ -52,7 +46,7 @@ class GenerateCalendarCommand extends Command
             );
         }
 
-        $calendar = $this->generateCalendar($events);
+        $calendar = $this->generateCalendar($calendar, $events);
 
         $success = $this->writeFile($input, $calendar);
 
@@ -78,16 +72,17 @@ class GenerateCalendarCommand extends Command
     }
 
     /**
+     * @param \romanzipp\CalendarGenerator\Generator\Calendar $calendar
      * @param \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[] $events
      * @return \Eluceo\iCal\Component\Calendar
      */
-    private function generateCalendar(array $events): iCalCalendar
+    private function generateCalendar(Calendar $calendar, array $events): iCalCalendar
     {
-        $iCalCalendar = new iCalCalendar('https://www.motogp.com');
-        $iCalCalendar->setDescription('MotoGP 2020');
-        $iCalCalendar->setCalendarColor('yellow');
-        $iCalCalendar->setName('MotoGP 2020');
-        $iCalCalendar->setCalId('motogp-2020');
+        $iCalCalendar = new iCalCalendar($calendar->url);
+        $iCalCalendar->setDescription($calendar->title);
+        $iCalCalendar->setCalendarColor($calendar->color);
+        $iCalCalendar->setName($calendar->title);
+        $iCalCalendar->setCalId($calendar->key);
 
         foreach ($events as $event) {
 

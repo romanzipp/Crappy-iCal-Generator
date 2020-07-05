@@ -12,17 +12,23 @@ class Calendar
 
     public string $generator;
 
-    public function __construct(string $key, string $title, string $generator)
+    public ?string $url;
+
+    public ?string $color;
+
+    public function __construct(string $key, string $title, string $generator, ?string $url = null, ?string $color = null)
     {
         $this->key = $key;
         $this->title = $title;
         $this->generator = $generator;
+        $this->url = $url;
+        $this->color = $color;
     }
 
     public static function getCalendars(): array
     {
         return [
-            new self('motogp-2020', 'MotoGP 2020', Generator\MotoGP\Generator::class),
+            new self('motogp-2020', 'MotoGP 2020', Generator\MotoGP\Generator::class, 'https://www.motogp.com', 'yellow'),
         ];
     }
 
