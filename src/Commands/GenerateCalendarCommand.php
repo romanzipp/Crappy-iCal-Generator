@@ -35,6 +35,8 @@ class GenerateCalendarCommand extends Command
             return Command::FAILURE;
         }
 
+        $output->writeln(sprintf('Generating %s calendar...', $calendar->title));
+
         /** @var \romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface $generator */
         $generator = new $calendar->generator;
 
@@ -46,9 +48,12 @@ class GenerateCalendarCommand extends Command
             );
         }
 
-        $calendar = $this->generateCalendar($calendar, $events);
+        $success = $this->writeFile(
+            $input,
+            $this->generateCalendar($calendar, $events)
+        );
 
-        $success = $this->writeFile($input, $calendar);
+        $output->writeln(sprintf('Successfully written %s calendar to "%s"...', $calendar->title, $input->getArgument('output')));
 
         if ($success) {
             return Command::SUCCESS;

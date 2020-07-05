@@ -17,7 +17,7 @@ class Generator implements GeneratorInterface
     private array $events;
 
     /**
-     * @return \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
+     * @return \romanzipp\CalendarGenerator\Generator\MotoGP\Event[]
      */
     public function generateEvents(): array
     {
@@ -48,8 +48,6 @@ class Generator implements GeneratorInterface
         );
 
         foreach ($events as $event) {
-
-            echo PHP_EOL;
 
             try {
 
@@ -98,8 +96,8 @@ class Generator implements GeneratorInterface
             }
 
             ###################################
-            print_r('Event ' . $date->format('Y-m-d') . ' "' . $title . '" @ ' . $country);
-            echo PHP_EOL;
+            # print_r('Event ' . $date->format('Y-m-d') . ' "' . $title . '" @ ' . $country);
+            # echo PHP_EOL;
             ###################################
 
             $buttonUrl = $buttonElement->getAttribute('href');
@@ -118,8 +116,8 @@ class Generator implements GeneratorInterface
                 $dayDate = Carbon::createFromFormat('Y-F-j', sprintf('%s-%s-%s', $matches[3], $matches[2], (int) $matches[1]));
 
                 ########################################
-                print_r('----> ' . $dayDate->format('Y-m-d'));
-                echo PHP_EOL;
+                # print_r('----> ' . $dayDate->format('Y-m-d'));
+                # echo PHP_EOL;
                 ########################################
 
                 $dayTableRowElements = $dayElement->find('.c-schedule__table-row');
@@ -147,8 +145,8 @@ class Generator implements GeneratorInterface
                     }
 
                     ########################################
-                    print_r('--------> ' . '[' . $dayRaceLeague . '] ' . $dayRaceTitleShort . ' - ' . $dayRaceTitle . ' :: ' . $dayRaceDateFrom->format('Y-m-d H:i:s') . ' - ' . ($dayRaceDateTo ? $dayRaceDateTo->format('Y-m-d H:i:s') : '...'));
-                    echo PHP_EOL;
+                    # print_r('--------> ' . '[' . $dayRaceLeague . '] ' . $dayRaceTitleShort . ' - ' . $dayRaceTitle . ' :: ' . $dayRaceDateFrom->format('Y-m-d H:i:s') . ' - ' . ($dayRaceDateTo ? $dayRaceDateTo->format('Y-m-d H:i:s') : '...'));
+                    # echo PHP_EOL;
                     ########################################
 
                     $country = ucfirst(strtolower($country));
