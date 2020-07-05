@@ -1,6 +1,6 @@
 <?php
 
-namespace romanzipp\CalendarGenerator\Generator\MotoGP;
+namespace romanzipp\CalendarGenerator\Generator\MotoGP2020;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -17,7 +17,7 @@ class Generator extends AbstractGenerator
     private array $events;
 
     /**
-     * @return \romanzipp\CalendarGenerator\Generator\MotoGP\Event[]
+     * @return \romanzipp\CalendarGenerator\Generator\MotoGP2020\Event[]
      */
     public function generateEvents(): array
     {
