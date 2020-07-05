@@ -91,7 +91,11 @@ class GenerateCalendarCommand extends Command
     {
         $iCalCalendar = new iCalCalendar($calendar->url);
         $iCalCalendar->setDescription($calendar->title);
-        $iCalCalendar->setCalendarColor($calendar->color);
+
+        if ($calendar->color) {
+            $iCalCalendar->setCalendarColor($calendar->color);
+        }
+
         $iCalCalendar->setName($calendar->title);
         $iCalCalendar->setCalId($calendar->key);
 
@@ -112,10 +116,19 @@ class GenerateCalendarCommand extends Command
                 );
             }
 
-            $iCalEvent->setUrl($event->url);
             $iCalEvent->setSummary($event->getFullTitle());
-            $iCalEvent->setDescription($event->description);
-            $iCalEvent->setLocation($event->location);
+
+            if ($event->description) {
+                $iCalEvent->setDescription($event->description);
+            }
+
+            if ($event->url) {
+                $iCalEvent->setUrl($event->url);
+            }
+
+            if ($event->location) {
+                $iCalEvent->setLocation($event->location);
+            }
 
             $iCalCalendar->addComponent($iCalEvent);
         }
