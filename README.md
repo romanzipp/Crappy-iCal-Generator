@@ -26,5 +26,8 @@ php calendar generate motogp-2020
 
 ### Register new calendar
 
-- Create new `Generator` and `Event` classes.
-- Register the calendar in `romanzipp\CalendarGenerator\Generator\Calendar::getCalendars`.
+Take a look at the [Dummy Generator](https://github.com/romanzipp/Crappy-iCal-Generator/tree/master/src/Generator/Dummy).
+
+- Create `romanzipp\CalendarGenerator\Generator\<Calendar>\Generator` class
+- Create `romanzipp\CalendarGenerator\Generator\<Calendar>\Event` class
+- Register the calendar in [`romanzipp\CalendarGenerator\Generator\Calendar::getCalendars`](https://github.com/romanzipp/Crappy-iCal-Generator/blob/master/src/Generator/Calendar.php).

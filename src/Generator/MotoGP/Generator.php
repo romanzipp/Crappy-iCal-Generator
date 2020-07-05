@@ -7,9 +7,9 @@ use Illuminate\Support\Str;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Dom\HtmlNode;
 use PHPHtmlParser\Exceptions\EmptyCollectionException;
-use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
+use romanzipp\CalendarGenerator\Generator\Abstracts\AbstractGenerator;
 
-class Generator implements GeneratorInterface
+class Generator extends AbstractGenerator
 {
     /**
      * @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
