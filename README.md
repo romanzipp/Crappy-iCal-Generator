@@ -4,6 +4,11 @@
 
 - [MotoGP 2020](https://www.motogp.com/en/calendar)
 
+## Setup
+
+1. Clone project
+2. `composer install`
+
 ## Usage
 
 ### Show available calendars

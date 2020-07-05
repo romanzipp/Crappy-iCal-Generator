@@ -21,9 +21,9 @@ class GenerateCalendarCommand extends Command
             ->setHelp(
                 sprintf('Available calendars: %s', implode(', ', Calendar::getKeys()))
             )
-            ->setDescription('Generates a MotoGP ICS file')
+            ->setDescription('Generates a calendar ICS file')
             ->addArgument('calendar', InputArgument::REQUIRED, 'The calendar to generator')
-            ->addArgument('output', InputArgument::OPTIONAL, 'The output ics file', 'motogp.ics');
+            ->addArgument('output', InputArgument::OPTIONAL, 'The output ics file', 'calendar.ics');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
