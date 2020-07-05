@@ -33,10 +33,11 @@ class GenerateCalendarCommand extends Command
         );
 
         if ($calendar === null) {
+            $output->writeln('<error>Can not find calendar</error>');
             return Command::FAILURE;
         }
 
-        $output->writeln(sprintf('Generating %s calendar...', $calendar->title));
+        $output->writeln("<comment>Generating {$calendar->title} calendar...</comment>");
 
         /** @var \romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface $generator */
         $generator = new $calendar->generator;
@@ -44,9 +45,7 @@ class GenerateCalendarCommand extends Command
         $events = $generator->generateEvents();
 
         foreach ($events as $event) {
-            $output->writeln(
-                $event->getLogLine()
-            );
+            $output->writeln("<fg=cyan>    {$event->getLogLine()}</>");
         }
 
         $success = $this->writeFile(
@@ -54,13 +53,18 @@ class GenerateCalendarCommand extends Command
             $this->generateCalendar($calendar, $events)
         );
 
-        $output->writeln(sprintf('Successfully written %s calendar to "%s"...', $calendar->title, $fileName));
+        if ($success === false) {
 
-        if ($success) {
-            return Command::SUCCESS;
+            $output->writeln("<error>Error writing file for {$calendar->title} calendar</error>");
+
+            return Command::FAILURE;
         }
 
-        return Command::FAILURE;
+        $eventCount = count($events);
+
+        $output->writeln("<info>Successfully written {$eventCount} events of {$calendar->title} calendar to {$fileName}</info>");
+
+        return Command::SUCCESS;
     }
 
     private function generateFileName(InputInterface $input): string
@@ -75,7 +79,7 @@ class GenerateCalendarCommand extends Command
             $calendar->render()
         );
 
-        if (is_bool($success)) {
+        if (is_int($success)) {
             return true;
         }
 
