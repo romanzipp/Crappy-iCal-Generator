@@ -2,6 +2,7 @@
 
 namespace romanzipp\CalendarGenerator\Commands;
 
+use Carbon\Carbon;
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event as iCalEvent;
 use romanzipp\CalendarGenerator\Generator\Calendar;
@@ -49,11 +50,11 @@ class GenerateCalendarCommand extends Command
         }
 
         $success = $this->writeFile(
-            $input,
+            $fileName = $this->generateFileName($input),
             $this->generateCalendar($calendar, $events)
         );
 
-        $output->writeln(sprintf('Successfully written %s calendar to "%s"...', $calendar->title, $input->getArgument('output')));
+        $output->writeln(sprintf('Successfully written %s calendar to "%s"...', $calendar->title, $fileName));
 
         if ($success) {
             return Command::SUCCESS;
@@ -62,10 +63,15 @@ class GenerateCalendarCommand extends Command
         return Command::FAILURE;
     }
 
-    private function writeFile(InputInterface $input, iCalCalendar $calendar): bool
+    private function generateFileName(InputInterface $input): string
+    {
+        return sprintf('%s-%s', Carbon::now()->format('Ymd-his'), $input->getArgument('output'));
+    }
+
+    private function writeFile(string $fileName, iCalCalendar $calendar): bool
     {
         $success = file_put_contents(
-            $input->getArgument('output'),
+            sprintf('%s/../../out/%s', __DIR__, $fileName),
             $calendar->render()
         );
 
