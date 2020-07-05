@@ -31,3 +31,7 @@ Take a look at the [Dummy Generator](https://github.com/romanzipp/Crappy-iCal-Ge
 - Create `romanzipp\CalendarGenerator\Generator\<Calendar>\Generator` class
 - Create `romanzipp\CalendarGenerator\Generator\<Calendar>\Event` class
 - Register the calendar in [`romanzipp\CalendarGenerator\Generator\Calendar::getCalendars`](https://github.com/romanzipp/Crappy-iCal-Generator/blob/master/src/Generator/Calendar.php).
+
+## Credits
+
+- [Roman Zipp](https://github.com/romanzipp)

@@ -1,6 +1,13 @@
 {
     "description": "super crappy motogp iCal generator",
     "type": "project",
+    "authors": [
+        {
+            "name": "romanzipp",
+            "email": "ich@ich.wtf",
+            "homepage": "https://ich.wtf"
+        }
+    ],
     "require": {
         "php": "^7.4",
         "illuminate/support": "^7.15",
