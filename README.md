@@ -5,5 +5,5 @@ sorry
 ## usage
 
 ```
-php calendar.php
+php calendar generate
 ```
