@@ -1,6 +1,6 @@
 <?php
 
-namespace romanzipp\CalendarGenerator\Generator\Dummy;
+namespace romanzipp\CalendarGenerator\Generator\Calendars\Dummy;
 
 use romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent;
 

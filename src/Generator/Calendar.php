@@ -2,7 +2,7 @@
 
 namespace romanzipp\CalendarGenerator\Generator;
 
-use romanzipp\CalendarGenerator\Generator;
+use romanzipp\CalendarGenerator\Generator\Calendars;
 
 class Calendar
 {
@@ -28,7 +28,7 @@ class Calendar
     public static function getCalendars(): array
     {
         return [
-            new self('motogp-2020', 'MotoGP 2020', Generator\MotoGP2020\Generator::class, 'https://www.motogp.com', 'yellow'),
+            new self('motogp-2020', 'MotoGP 2020', Calendars\MotoGP2020\Generator::class, 'https://www.motogp.com', 'yellow'),
         ];
     }
 

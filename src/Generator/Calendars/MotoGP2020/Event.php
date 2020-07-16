@@ -1,6 +1,6 @@
 <?php
 
-namespace romanzipp\CalendarGenerator\Generator\MotoGP2020;
+namespace romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2020;
 
 use Carbon\Carbon;
 use romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent;
