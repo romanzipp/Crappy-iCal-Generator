@@ -8,13 +8,14 @@ use PHPHtmlParser\Dom;
 use PHPHtmlParser\Dom\HtmlNode;
 use PHPHtmlParser\Exceptions\EmptyCollectionException;
 use romanzipp\CalendarGenerator\Generator\Abstracts\AbstractGenerator;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class Generator extends AbstractGenerator
 {
     /**
      * @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
      */
-    private array $events;
+    private array $events = [];
 
     /**
      * @return \romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2020\Event[]
@@ -24,6 +25,20 @@ class Generator extends AbstractGenerator
         $this->generate();
 
         return $this->events;
+    }
+
+    public function getCommandQuestions(): array
+    {
+        return [
+            'leagues' => new ChoiceQuestion('Which leagues should be included?', [
+                'All',
+                'MotoGP',
+                'Moto2',
+                'Moto3',
+                'MotoGP + Moto2 + Moto3',
+                'MotoE',
+            ]),
+        ];
     }
 
     private function fetchCalendarDom(): Dom
@@ -39,6 +54,21 @@ class Generator extends AbstractGenerator
     private function findCalendarDomEvents(Dom $dom)
     {
         return $dom->find('.calendar_events .event.shadow_block');
+    }
+
+    public function shouldLeagueBeGenerated($league): bool
+    {
+        $choice = $this->getQuestionResponse('leagues');
+
+        if ($choice === 'All') {
+            return true;
+        }
+
+        if ($choice === 'MotoGP + Moto2 + Moto3' && in_array($league, ['MotoGP', 'Moto2', 'Moto3'])) {
+            return true;
+        }
+
+        return $league == $choice;
     }
 
     private function generate(): void
@@ -129,6 +159,10 @@ class Generator extends AbstractGenerator
                     $dayRaceLeague = trim($dayCells[1]->text);
                     $dayRaceTitle = trim($dayCells[2]->find('.hidden-xs')->text);
                     $dayRaceTitleShort = trim($dayCells[2]->find('.visible-xs')->text);
+
+                    if ( ! $this->shouldLeagueBeGenerated($dayRaceLeague)) {
+                        continue;
+                    }
 
                     $dayRaceDates = $dayCells[3]->find('.c-schedule__time span');
 
