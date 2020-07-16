@@ -13,12 +13,12 @@ abstract class AbstractGenerator implements GeneratorInterface
         return [];
     }
 
-    public function setQuestionResponse(string $name, $choice): void
+    final public function setQuestionResponse(string $name, $choice): void
     {
         $this->questionResponses[$name] = $choice;
     }
 
-    public function getQuestionResponse(string $name)
+    final public function getQuestionResponse(string $name)
     {
         return $this->questionResponses[$name] ?? null;
     }
