@@ -42,6 +42,25 @@ class GenerateCalendarCommand extends Command
         /** @var \romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface $generator */
         $generator = new $calendar->generator;
 
+        // Questions
+
+        $helper = $this->getHelper('question');
+
+        if ( ! empty($questions = $generator->getCommandQuestions())) {
+
+            foreach ($questions as $name => $question) {
+
+                $generator->setQuestionResponse(
+                    $name,
+                    $response = $helper->ask($input, $output, $question)
+                );
+
+                if ( ! $response) {
+                    return Command::SUCCESS;
+                }
+            }
+        }
+
         $events = $generator->generateEvents();
 
         foreach ($events as $event) {
