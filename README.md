@@ -1,5 +1,7 @@
 # Crappy iCal Generator
 
+A continuously updated PHP iCal generator for various events using highly advanced techniques (like... website scraping, reverse engineering hehe)
+
 ### Supported calendars:
 
 - [MotoGP 2020](https://www.motogp.com/en/calendar)
