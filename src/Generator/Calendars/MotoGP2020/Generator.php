@@ -36,8 +36,15 @@ class Generator extends AbstractGenerator
                 'MotoGP',
                 'Moto2',
                 'Moto3',
+                'MotoGP + Moto2',
                 'MotoGP + Moto2 + Moto3',
                 'MotoE',
+            ]),
+            'events' => new ChoiceQuestion('Which events should be included?', [
+                'All',
+                'RAC',
+                'RAC + Q',
+                'RAC + Q + FP',
             ]),
         ];
     }
@@ -59,17 +66,44 @@ class Generator extends AbstractGenerator
 
     public function shouldLeagueBeGenerated($league): bool
     {
-        $choice = $this->getQuestionResponse('leagues');
-
-        if ('All' === $choice) {
-            return true;
-        }
-
-        if ('MotoGP + Moto2 + Moto3' === $choice && in_array($league, ['MotoGP', 'Moto2', 'Moto3'])) {
-            return true;
+        switch ($choice = $this->getQuestionResponse('leagues')) {
+            case 'All':
+                return true;
+            case 'MotoGP + Moto2':
+                return in_array($league, ['MotoGP', 'Moto2']);
+            case 'MotoGP + Moto2 + Moto3':
+                return in_array($league, ['MotoGP', 'Moto2', 'Moto3']);
         }
 
         return $league == $choice;
+    }
+
+    public function shouldEventBeGenerated($event): bool
+    {
+        switch ($this->getQuestionResponse('events')) {
+            case 'All':
+                return true;
+            case 'RAC':
+                return Str::contains($event, ['Race']);
+            case 'RAC + Q':
+                return Str::contains($event, ['Race', 'Qualifying Nr.']);
+            case 'RAC + Q + FP':
+                return Str::contains($event, ['Race', 'Qualifying Nr.', 'Free Practice']);
+        }
+
+        return false;
+        /*
+         * Possible:
+         * MotoGP™ Test Day 1
+         * Press Conference
+         * Free Practice Nr. 1
+         * Qualifying Nr. 1
+         * Qualifying Press Conference
+         * Warm Up
+         * Race
+         * After The Flag
+         * Race Press Conference
+         */
     }
 
     public function spawnBrowser()
@@ -175,7 +209,7 @@ class Generator extends AbstractGenerator
                         $dayRaceDateTo = Carbon::parse($dayRaceDates[1]->getAttribute('data-end'));
                     }
 
-                    if (Str::contains($dayRaceTitle, ['Warm Up', 'Free Practice', 'Press', 'Show'])) {
+                    if ( ! $this->shouldEventBeGenerated($dayRaceTitle)) {
                         continue;
                     }
 
