@@ -86,9 +86,9 @@ class Generator extends AbstractGenerator
             case 'RAC':
                 return Str::contains($event, ['Race']);
             case 'RAC + Q':
-                return Str::contains($event, ['Race', 'Qualifying Nr.']);
+                return 'Race' === $event || Str::startsWith($event, 'Qualifying Nr.');
             case 'RAC + Q + FP':
-                return Str::contains($event, ['Race', 'Qualifying Nr.', 'Free Practice']);
+                return 'Race' === $event || Str::startsWith($event, 'Qualifying Nr.') || Str::startsWith($event, 'Free Practice');
         }
 
         return false;
