@@ -15,7 +15,8 @@
         "eluceo/ical": "^0.16.0",
         "symfony/console": "^5.1",
         "nesbot/carbon": "^2.36",
-        "chrome-php/chrome": "^0.8.1"
+        "chrome-php/chrome": "^0.8.1",
+        "symfony/dotenv": "^5.1"
     },
     "autoload": {
         "psr-4": {

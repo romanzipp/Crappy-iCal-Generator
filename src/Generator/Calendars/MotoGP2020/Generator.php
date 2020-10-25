@@ -74,7 +74,7 @@ class Generator extends AbstractGenerator
 
     public function spawnBrowser()
     {
-        $browserFactory = new BrowserFactory('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
+        $browserFactory = new BrowserFactory($_ENV['CHROME_BINARY']);
 
         return $browserFactory->createBrowser();
     }
@@ -113,20 +113,12 @@ class Generator extends AbstractGenerator
             }
 
             try {
-                $buttonElement = $event->find('.event_buttons a');
+                $thumb = $event->find('.event_image_container');
             } catch (EmptyCollectionException $e) {
                 continue;
             }
 
-            if (HtmlNode::class === get_class($buttonElement)) {
-                continue;
-            }
-
-            $buttonElement = $buttonElement[0];
-
-            $buttonText = trim($buttonElement->innerHtml);
-
-            if ('View Results' === $buttonText) {
+            if (HtmlNode::class === get_class($thumb)) {
                 continue;
             }
 
@@ -135,11 +127,11 @@ class Generator extends AbstractGenerator
             // echo PHP_EOL;
             //##################################
 
-            $buttonUrl = $buttonElement->getAttribute('href');
+            $eventUrl = $thumb->getAttribute('href');
 
             $browser = $this->spawnBrowser();
             $page = $browser->createPage();
-            $page->navigate($buttonUrl)->waitForNavigation();
+            $page->navigate($eventUrl)->waitForNavigation();
 
             $scheduleHtml = $page->evaluate('document.querySelector(".c-schedule").innerHTML')->getReturnValue();
 
@@ -183,7 +175,7 @@ class Generator extends AbstractGenerator
                         $dayRaceDateTo = Carbon::parse($dayRaceDates[1]->getAttribute('data-end'));
                     }
 
-                    if (Str::contains($dayRaceTitle, ['Warm Up', 'Free Practice'])) {
+                    if (Str::contains($dayRaceTitle, ['Warm Up', 'Free Practice', 'Press', 'Show'])) {
                         continue;
                     }
 
@@ -200,7 +192,7 @@ class Generator extends AbstractGenerator
                     $cEvent->start = $dayRaceDateFrom;
                     $cEvent->end = $dayRaceDateTo;
                     $cEvent->location = $country;
-                    $cEvent->url = $buttonUrl;
+                    $cEvent->url = $eventUrl;
 
                     $cEvent->league = $dayRaceLeague;
 
