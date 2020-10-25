@@ -3,6 +3,7 @@
 namespace romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2020;
 
 use Carbon\Carbon;
+use HeadlessChromium\BrowserFactory;
 use Illuminate\Support\Str;
 use PHPHtmlParser\Dom;
 use PHPHtmlParser\Dom\HtmlNode;
@@ -71,6 +72,13 @@ class Generator extends AbstractGenerator
         return $league == $choice;
     }
 
+    public function spawnBrowser()
+    {
+        $browserFactory = new BrowserFactory('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome');
+
+        return $browserFactory->createBrowser();
+    }
+
     private function generate(): void
     {
         $events = $this->findCalendarDomEvents(
@@ -129,8 +137,14 @@ class Generator extends AbstractGenerator
 
             $buttonUrl = $buttonElement->getAttribute('href');
 
+            $browser = $this->spawnBrowser();
+            $page = $browser->createPage();
+            $page->navigate($buttonUrl)->waitForNavigation();
+
+            $scheduleHtml = $page->evaluate('document.querySelector(".c-schedule").innerHTML')->getReturnValue();
+
             $eventDom = new Dom();
-            $eventDom->loadFromUrl($buttonUrl);
+            $eventDom->load($scheduleHtml);
 
             $daysElements = $eventDom->find('.c-schedule__table-container');
 
