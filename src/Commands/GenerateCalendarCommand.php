@@ -32,24 +32,23 @@ class GenerateCalendarCommand extends Command
             $input->getArgument('calendar')
         );
 
-        if ($calendar === null) {
+        if (null === $calendar) {
             $output->writeln('<error>Can not find calendar</error>');
+
             return Command::FAILURE;
         }
 
         $output->writeln("<comment>Generating {$calendar->title} calendar...</comment>");
 
         /** @var \romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface $generator */
-        $generator = new $calendar->generator;
+        $generator = new $calendar->generator();
 
         // Questions
 
         $helper = $this->getHelper('question');
 
         if ( ! empty($questions = $generator->getCommandQuestions())) {
-
             foreach ($questions as $name => $question) {
-
                 $generator->setQuestionResponse(
                     $name,
                     $response = $helper->ask($input, $output, $question)
@@ -72,8 +71,7 @@ class GenerateCalendarCommand extends Command
             $this->generateCalendar($calendar, $events)
         );
 
-        if ($success === false) {
-
+        if (false === $success) {
             $output->writeln("<error>Error writing file for {$calendar->title} calendar</error>");
 
             return Command::FAILURE;
@@ -108,6 +106,7 @@ class GenerateCalendarCommand extends Command
     /**
      * @param \romanzipp\CalendarGenerator\Generator\Calendar $calendar
      * @param \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[] $events
+     *
      * @return \Eluceo\iCal\Component\Calendar
      */
     private function generateCalendar(Calendar $calendar, array $events): iCalCalendar
@@ -123,9 +122,7 @@ class GenerateCalendarCommand extends Command
         $iCalCalendar->setCalId($calendar->key);
 
         foreach ($events as $event) {
-
             /** @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent $event */
-
             $iCalEvent = new iCalEvent();
 
             $iCalEvent->setDtStart($event->start);

@@ -9,7 +9,7 @@ class Generator extends AbstractGenerator
 {
     public function generateEvents(): array
     {
-        $event = new Event;
+        $event = new Event();
         $event->title = 'Dummy Event';
         $event->start = Carbon::now();
         $event->end = Carbon::now()->addHour();

@@ -45,7 +45,7 @@ class Generator extends AbstractGenerator
     {
         $calendarHtml = file_get_contents('https://www.motogp.com/en/calendar');
 
-        $dom = new Dom;
+        $dom = new Dom();
         $dom->load($calendarHtml);
 
         return $dom;
@@ -60,11 +60,11 @@ class Generator extends AbstractGenerator
     {
         $choice = $this->getQuestionResponse('leagues');
 
-        if ($choice === 'All') {
+        if ('All' === $choice) {
             return true;
         }
 
-        if ($choice === 'MotoGP + Moto2 + Moto3' && in_array($league, ['MotoGP', 'Moto2', 'Moto3'])) {
+        if ('MotoGP + Moto2 + Moto3' === $choice && in_array($league, ['MotoGP', 'Moto2', 'Moto3'])) {
             return true;
         }
 
@@ -78,12 +78,9 @@ class Generator extends AbstractGenerator
         );
 
         foreach ($events as $event) {
-
             try {
-
                 $dayElement = $event->find('.event_day');
                 $monthElement = $event->find('.event_month');
-
             } catch (EmptyCollectionException $e) {
                 continue;
             }
@@ -91,7 +88,7 @@ class Generator extends AbstractGenerator
             $day = (int) $dayElement->innerHtml;
             $month = trim($monthElement->innerHtml);
 
-            if ($month === '&nbsp') {
+            if ('&nbsp' === $month) {
                 continue;
             }
 
@@ -113,7 +110,7 @@ class Generator extends AbstractGenerator
                 continue;
             }
 
-            if (get_class($buttonElement) === HtmlNode::class) {
+            if (HtmlNode::class === get_class($buttonElement)) {
                 continue;
             }
 
@@ -121,39 +118,37 @@ class Generator extends AbstractGenerator
 
             $buttonText = trim($buttonElement->innerHtml);
 
-            if ($buttonText === 'View Results') {
+            if ('View Results' === $buttonText) {
                 continue;
             }
 
-            ###################################
-            # print_r('Event ' . $date->format('Y-m-d') . ' "' . $title . '" @ ' . $country);
-            # echo PHP_EOL;
-            ###################################
+            //##################################
+            // print_r('Event ' . $date->format('Y-m-d') . ' "' . $title . '" @ ' . $country);
+            // echo PHP_EOL;
+            //##################################
 
             $buttonUrl = $buttonElement->getAttribute('href');
 
-            $eventDom = new Dom;
+            $eventDom = new Dom();
             $eventDom->loadFromUrl($buttonUrl);
 
             $daysElements = $eventDom->find('.c-schedule__table-container');
 
             foreach ($daysElements as $dayElement) {
-
                 $dayDateElement = $eventDom->find('.c-schedule__days-tabs .c-schedule__date[data-tab="' . $dayElement->getAttribute('data-tab') . '"]');
 
                 preg_match('/>([ 0-9]+).*> ([A-z]+) ([0-9]+)/', $dayDateElement->innerHtml, $matches);
 
                 $dayDate = Carbon::createFromFormat('Y-F-j', sprintf('%s-%s-%s', $matches[3], $matches[2], (int) $matches[1]));
 
-                ########################################
-                # print_r('----> ' . $dayDate->format('Y-m-d'));
-                # echo PHP_EOL;
-                ########################################
+                //#######################################
+                // print_r('----> ' . $dayDate->format('Y-m-d'));
+                // echo PHP_EOL;
+                //#######################################
 
                 $dayTableRowElements = $dayElement->find('.c-schedule__table-row');
 
                 foreach ($dayTableRowElements as $dayTableRowElement) {
-
                     $dayCells = $dayTableRowElement->find('.c-schedule__table-cell');
 
                     $dayRaceLeague = trim($dayCells[1]->text);
@@ -170,7 +165,7 @@ class Generator extends AbstractGenerator
 
                     $dayRaceDateTo = null;
 
-                    if (count($dayRaceDates) == 2) {
+                    if (2 == count($dayRaceDates)) {
                         $dayRaceDateTo = Carbon::parse($dayRaceDates[1]->getAttribute('data-end'));
                     }
 
@@ -178,14 +173,14 @@ class Generator extends AbstractGenerator
                         continue;
                     }
 
-                    ########################################
-                    # print_r('--------> ' . '[' . $dayRaceLeague . '] ' . $dayRaceTitleShort . ' - ' . $dayRaceTitle . ' :: ' . $dayRaceDateFrom->format('Y-m-d H:i:s') . ' - ' . ($dayRaceDateTo ? $dayRaceDateTo->format('Y-m-d H:i:s') : '...'));
-                    # echo PHP_EOL;
-                    ########################################
+                    //#######################################
+                    // print_r('--------> ' . '[' . $dayRaceLeague . '] ' . $dayRaceTitleShort . ' - ' . $dayRaceTitle . ' :: ' . $dayRaceDateFrom->format('Y-m-d H:i:s') . ' - ' . ($dayRaceDateTo ? $dayRaceDateTo->format('Y-m-d H:i:s') : '...'));
+                    // echo PHP_EOL;
+                    //#######################################
 
                     $country = ucfirst(strtolower($country));
 
-                    $cEvent = new Event;
+                    $cEvent = new Event();
 
                     $cEvent->description = $dayRaceLeague . ', ' . $dayRaceTitle . ', ' . $title;
                     $cEvent->start = $dayRaceDateFrom;
