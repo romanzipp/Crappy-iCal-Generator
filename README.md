@@ -4,7 +4,7 @@ A continuously updated PHP iCal generator for various events using highly advanc
 
 ### Supported calendars:
 
-- [MotoGP 2020](https://www.motogp.com/en/calendar)
+- [MotoGP 2021](https://www.motogp.com/en/calendar)
 
 ## Setup
 
@@ -26,7 +26,7 @@ php calendar generate <calendar>
 ```
 
 ```
-php calendar generate motogp-2020
+php calendar generate motogp-2021
 ```
 
 ## Development

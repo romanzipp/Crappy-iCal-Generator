@@ -26,7 +26,7 @@ class Calendar
     public static function getCalendars(): array
     {
         return [
-            new self('motogp-2020', 'MotoGP 2020', Calendars\MotoGP2020\Generator::class, 'https://www.motogp.com', 'yellow'),
+            new self('motogp-2021', 'MotoGP 2021', Calendars\MotoGP2021\Generator::class, 'https://www.motogp.com', 'yellow'),
         ];
     }
 

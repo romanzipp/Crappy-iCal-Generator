@@ -1,8 +1,9 @@
 <?php
 
-namespace romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2020;
+namespace romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2021;
 
 use Carbon\Carbon;
+use Exception;
 use HeadlessChromium\BrowserFactory;
 use Illuminate\Support\Str;
 use PHPHtmlParser\Dom;
@@ -19,7 +20,7 @@ class Generator extends AbstractGenerator
     private array $events = [];
 
     /**
-     * @return \romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2020\Event[]
+     * @return \romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2021\Event[]
      */
     public function generateEvents(): array
     {
@@ -134,7 +135,11 @@ class Generator extends AbstractGenerator
                 continue;
             }
 
-            $date = Carbon::createFromFormat('Y-M-j', sprintf('2020-%s-%s', $month, $day));
+            try {
+                $date = Carbon::createFromFormat('Y-M-j', sprintf('2021-%s-%s', $month, $day));
+            } catch (Exception $exception) {
+                continue;
+            }
 
             $circuit = trim($event->find('.event_title .location span')[0]->innerHtml);
             $country = trim($event->find('.event_title .location span')[1]->innerHtml);
@@ -179,7 +184,11 @@ class Generator extends AbstractGenerator
 
                 preg_match('/>([ 0-9]+).*> ([A-z]+) ([0-9]+)/', $dayDateElement->innerHtml, $matches);
 
-                $dayDate = Carbon::createFromFormat('Y-F-j', sprintf('%s-%s-%s', $matches[3], $matches[2], (int) $matches[1]));
+                try {
+                    $dayDate = Carbon::createFromFormat('Y-F-j', sprintf('%s-%s-%s', $matches[3], $matches[2], (int) $matches[1]));
+                } catch (Exception $exception) {
+                    continue;
+                }
 
                 //#######################################
                 // print_r('----> ' . $dayDate->format('Y-m-d'));
@@ -201,12 +210,20 @@ class Generator extends AbstractGenerator
 
                     $dayRaceDates = $dayCells[3]->find('.c-schedule__time span');
 
-                    $dayRaceDateFrom = Carbon::parse($dayRaceDates[0]->getAttribute('data-ini-time'));
+                    try {
+                        $dayRaceDateFrom = Carbon::parse($dayRaceDates[0]->getAttribute('data-ini-time'));
+                    } catch (Exception $exception) {
+                        continue 2;
+                    }
 
                     $dayRaceDateTo = null;
 
-                    if (2 == count($dayRaceDates)) {
-                        $dayRaceDateTo = Carbon::parse($dayRaceDates[1]->getAttribute('data-end'));
+                    if (2 === count($dayRaceDates)) {
+                        try {
+                            $dayRaceDateTo = Carbon::parse($dayRaceDates[1]->getAttribute('data-end'));
+                        } catch (Exception $exception) {
+                            continue 2;
+                        }
                     }
 
                     if ( ! $this->shouldEventBeGenerated($dayRaceTitle)) {
