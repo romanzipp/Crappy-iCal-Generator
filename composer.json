@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "illuminate/support": "^7.15",
         "paquettg/php-html-parser": "^2.2",
         "eluceo/ical": "^0.16.0",

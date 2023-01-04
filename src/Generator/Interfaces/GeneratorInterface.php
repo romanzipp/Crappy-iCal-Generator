@@ -4,6 +4,8 @@ namespace romanzipp\CalendarGenerator\Generator\Interfaces;
 
 interface GeneratorInterface
 {
+    public static function getName(): string;
+
     /**
      * @return \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent[]
      */

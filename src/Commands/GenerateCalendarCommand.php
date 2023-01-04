@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Eluceo\iCal\Component\Calendar as iCalCalendar;
 use Eluceo\iCal\Component\Event as iCalEvent;
 use romanzipp\CalendarGenerator\Generator\Calendar;
+use romanzipp\CalendarGenerator\Generator\Interfaces\GeneratorInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,8 +23,7 @@ class GenerateCalendarCommand extends Command
                 sprintf('Available calendars: %s', implode(', ', Calendar::getKeys()))
             )
             ->setDescription('Generates a calendar ICS file')
-            ->addArgument('calendar', InputArgument::REQUIRED, 'The calendar to generator')
-            ->addArgument('output', InputArgument::OPTIONAL, 'The output ics file', 'calendar.ics');
+            ->addArgument('calendar', InputArgument::REQUIRED, 'The calendar to generator');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -67,7 +67,7 @@ class GenerateCalendarCommand extends Command
         }
 
         $success = $this->writeFile(
-            $fileName = $this->generateFileName($input),
+            $fileName = $this->generateFileName($generator),
             $this->generateCalendar($calendar, $events)
         );
 
@@ -84,9 +84,9 @@ class GenerateCalendarCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function generateFileName(InputInterface $input): string
+    private function generateFileName(GeneratorInterface $generator): string
     {
-        return sprintf('%s-%s', Carbon::now()->format('Ymd-his'), $input->getArgument('output'));
+        return sprintf('%s-%s.ics', Carbon::now()->format('Ymd-his'), $generator::getName());
     }
 
     private function writeFile(string $fileName, iCalCalendar $calendar): bool
@@ -125,10 +125,18 @@ class GenerateCalendarCommand extends Command
             /** @var \romanzipp\CalendarGenerator\Generator\Abstracts\AbstractEvent $event */
             $iCalEvent = new iCalEvent();
 
+            if ($event->id) {
+                $iCalEvent->setUniqueId($event->id);
+            }
+
             $iCalEvent->setDtStart($event->start);
             $iCalEvent->setTimezoneString('UTC');
 
             if ($event->end) {
+                if ( ! $event->end->isSameDay($event->start)) {
+                    $iCalEvent->setNoTime(true);
+                }
+
                 $iCalEvent->setDtEnd($event->end);
             } else {
                 $iCalEvent->setDtEnd(
@@ -136,7 +144,7 @@ class GenerateCalendarCommand extends Command
                 );
             }
 
-            $iCalEvent->setSummary($event->getFullTitle());
+            $iCalEvent->setSummary($event->title);
 
             if ($event->description) {
                 $iCalEvent->setDescription($event->description);

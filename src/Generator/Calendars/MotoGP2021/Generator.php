@@ -19,6 +19,11 @@ class Generator extends AbstractGenerator
      */
     private array $events = [];
 
+    public static function getName(): string
+    {
+        return 'motogp-2021';
+    }
+
     /**
      * @return \romanzipp\CalendarGenerator\Generator\Calendars\MotoGP2021\Event[]
      */

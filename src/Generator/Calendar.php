@@ -27,6 +27,7 @@ class Calendar
     {
         return [
             new self('motogp-2021', 'MotoGP 2021', Calendars\MotoGP2021\Generator::class, 'https://www.motogp.com', 'yellow'),
+            new self('motogp-2023', 'MotoGP 2023', Calendars\MotoGP2023\Generator::class, 'https://www.motogp.com', 'yellow'),
         ];
     }
 

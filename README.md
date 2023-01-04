@@ -5,6 +5,7 @@ A continuously updated PHP iCal generator for various events using highly advanc
 ### Supported calendars:
 
 - [MotoGP 2021](https://www.motogp.com/en/calendar)
+- [MotoGP 2023](https://www.motogp.com/en/calendar/2023/all-categories/all-types/upcoming-events)
 
 ## Setup
 
@@ -26,7 +27,7 @@ php calendar generate <calendar>
 ```
 
 ```
-php calendar generate motogp-2021
+php calendar generate motogp-2023
 ```
 
 ## Development
