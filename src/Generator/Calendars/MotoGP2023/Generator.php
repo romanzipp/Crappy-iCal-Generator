@@ -122,31 +122,41 @@ class Generator extends AbstractGenerator
 
             $category = $item->categories[0];
 
-            $event = new Event();
-            $event->id = $item->id;
+            foreach ($item->broadcasts as $broadcast) {
+                $event = new Event();
+                $event->id = $item->id . '@' . $broadcast->id;
 
-            $event->description = implode(PHP_EOL, [
-                'Kind: ' . self::getKindName($item->kind),
-                'League: ' . implode(', ', array_map(fn ($league) => $league->name, $item->categories)),
-                'Circuit: ' . $item->circuit->name,
-                '----------------------',
-                'Broadcasts:',
-                ...array_map(fn ($broadcast) => '- ' . Carbon::parse($broadcast->date_start)->format('d.m. H:i') . ' ' . $broadcast->name . ': ' . ucfirst(strtolower($broadcast->kind)), $item->broadcasts),
-            ]);
-            $event->start = Carbon::parse($item->date_start, $item->time_zone);
-            $event->end = Carbon::parse($item->date_end, $item->time_zone);
-            $event->location = $item->circuit?->country ?? $item->country;
-            $event->url = "https://www.motogp.com/en/calendar/2023/event/{$item->url}";
+                $event->description = implode(PHP_EOL, [
+                    'Kind: ' . self::getKindName($item->kind),
+                    'League: ' . implode(', ', array_map(fn ($league) => $league->name, $item->categories)),
+                    'Circuit: ' . $item->circuit->name,
+                    '----------------------',
+                    'Broadcasts:',
+                    ...array_map(fn ($broadcast) => '- ' . Carbon::parse($broadcast->date_start)->format('d.m. H:i') . ' ' . $broadcast->name . ': ' . ucfirst(strtolower($broadcast->kind)), $item->broadcasts),
+                    '----------------------',
+                    'Live: ' . ($broadcast->has_live ? '✅' : '❌'),
+                    'VOD: ' . ($broadcast->has_vod ? '✅' : '❌'),
+                    'Timing: ' . ($broadcast->has_timing ? '✅' : '❌'),
+                ]);
 
-            $event->league = $category->name;
+                $end = Carbon::parse($broadcast->date_end, $item->time_zone)->shiftTimezone('Europe/Berlin');
 
-            $event->type = $item->kind;
-            $event->shortType = $item->kind;
+                $event->start = $start = Carbon::parse($broadcast->date_start, $item->time_zone)->shiftTimezone('Europe/Berlin');
+                $event->end = $end->eq($start) ? (clone $start)->addMinutes(90) : $end;
 
-            $event->title = trim($item->name) . ' - ' . self::getLeagueName($category->acronym);
-            $event->fullTitle = $item->name;
+                $event->location = $item->circuit?->country ?? $item->country;
+                $event->url = "https://www.motogp.com/en/calendar/2023/event/{$item->url}";
 
-            $this->events[] = $event;
+                $event->league = $category->name;
+
+                $event->type = $item->kind;
+                $event->shortType = $item->kind;
+
+                $event->title = ucfirst(strtolower($broadcast->kind)) . ': ' . trim($item->name) . ' - ' . self::getLeagueName($category->acronym);
+                $event->fullTitle = $item->name;
+
+                $this->events[] = $event;
+            }
         }
     }
 }
